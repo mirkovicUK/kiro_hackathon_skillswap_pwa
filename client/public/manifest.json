@@ -1,0 +1,39 @@
+{
+  "name": "SkillSwap",
+  "short_name": "SkillSwap",
+  "description": "Exchange skills with neighbors over coffee",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F5",
+  "theme_color": "#3B5FE8",
+  "icons": [
+    {
+      "src": "/SkillSwap_logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/SkillSwap_logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/SkillSwap_logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SkillSwap - Discover neighbors with matching skills"
+    },
+    {
+      "src": "/SkillSwap_logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "SkillSwap - Exchange skills on the go"
+    }
+  ]
+}

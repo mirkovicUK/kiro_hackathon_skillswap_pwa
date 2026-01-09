@@ -1,0 +1,30 @@
+{
+  "name": "skillswap-dev",
+  "description": "SkillSwap development agent with automatic DEVLOG tracking",
+  "prompt": "You are developing SkillSwap, a PWA for neighborhood skill exchanges with mandatory coffee meetings. Always reference the spec files in .kiro/specs/skillswap-pwa/ for requirements and design. After completing significant work, remind the user to update DEVLOG.md with progress.",
+  "tools": ["*"],
+  "allowedTools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "resources": [
+    "file://README.md",
+    "file://DEVLOG.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/specs/skillswap-pwa/**/*.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo '📋 SkillSwap Dev Session Started at '$(date '+%Y-%m-%d %H:%M')"
+      }
+    ],
+    "stop": [
+      {
+        "command": "echo '✅ Task completed. Remember to update DEVLOG.md with: time spent, decisions made, challenges encountered.'"
+      }
+    ]
+  },
+  "model": "claude-sonnet-4"
+}

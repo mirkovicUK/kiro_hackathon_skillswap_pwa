@@ -1,0 +1,20 @@
+{
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "echo '📋 SkillSwap Dev Session - Remember to track time and update DEVLOG.md'"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "write",
+        "command": "echo '✏️ File modified - consider updating DEVLOG if this completes a task'"
+      }
+    ],
+    "stop": [
+      {
+        "command": "echo '✅ Task complete! Update DEVLOG.md with: time spent, decisions made, challenges encountered.'"
+      }
+    ]
+  }
+}
