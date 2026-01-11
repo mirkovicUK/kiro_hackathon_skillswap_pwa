@@ -5,11 +5,11 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Client (React PWA)                        │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌────────┐│
-│  │  Auth   │ │ Profile │ │Discover │ │ Matches │ │Meeting ││
-│  │  Pages  │ │  Page   │ │  Page   │ │  Page   │ │  Page  ││
-│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └───┬────┘│
-│       └───────────┴───────────┼───────────┴──────────┘     │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌────────┐ ┌──────┐│
+│  │  Auth   │ │ Profile │ │Discover │ │ Matches │ │Meeting │ │ Chat ││
+│  │  Pages  │ │  Page   │ │  Page   │ │  Page   │ │  Page  │ │ Page ││
+│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └───┬────┘ └──┬───┘│
+│       └───────────┴───────────┼───────────┴──────────┴─────────┘    │
 │                               │                             │
 │                    React Context (Auth State)               │
 │                               │                             │
@@ -21,12 +21,12 @@
 │                               │                             │
 │  ┌────────────────────────────┴────────────────────────┐   │
 │  │                    API Routes                        │   │
-│  │  /api/auth    /api/users    /api/matches   /api/meetings│
+│  │  /api/auth    /api/users    /api/matches   /api/meetings  /api/chat│
 │  └────────────────────────────┬────────────────────────┘   │
 │                               │                             │
 │  ┌────────────────────────────┴────────────────────────┐   │
 │  │                  Service Layer                       │   │
-│  │  AuthService  MatchService  MeetingService          │   │
+│  │  AuthService  MatchService  MeetingService  ChatService  │   │
 │  │  GeoService   SeedService                           │   │
 │  └────────────────────────────┬────────────────────────┘   │
 │                               │                             │
@@ -53,17 +53,29 @@
 ### Component Structure
 ```
 client/src/
-├── pages/           # Route-level components
-│   ├── Login.jsx
+├── pages/              # Route-level components
+│   ├── FrontPage.jsx       # Public landing page
+│   ├── Privacy.jsx         # Privacy Policy
+│   ├── Terms.jsx           # Terms of Service
+│   ├── Cookies.jsx         # Cookie Policy
+│   ├── Contact.jsx         # Contact form
+│   ├── Login.jsx           # Authentication
 │   ├── Register.jsx
-│   ├── Profile.jsx
-│   ├── Discover.jsx
-│   ├── Matches.jsx
-│   └── Meeting.jsx
-├── components/      # Reusable UI
-│   ├── Layout.jsx
+│   ├── ForgotPassword.jsx
+│   ├── ResetPassword.jsx
+│   ├── Profile.jsx         # User profile
+│   ├── Discover.jsx        # Find matches
+│   ├── Matches.jsx         # Mutual matches
+│   └── Meeting.jsx         # Coffee scheduling
+├── components/         # Reusable UI
+│   ├── PublicHeader.jsx    # Header for public pages
+│   ├── PublicLayout.jsx    # Layout wrapper (header + footer + cookie)
+│   ├── Footer.jsx          # Site-wide footer
+│   ├── CookieConsent.jsx   # GDPR cookie banner
+│   ├── Layout.jsx          # Authenticated layout
 │   ├── MatchCard.jsx
-│   └── SkillSelector.jsx
+│   ├── SkillSelector.jsx
+│   └── InstallPrompt.jsx   # PWA install prompt
 └── context/
     └── AuthContext.jsx
 ```
@@ -160,9 +172,24 @@ fc.assert(
 ```
 
 ### Test Coverage
-- **23 correctness properties** across 3 specs
-- **54 total tests** (properties + additional)
+- **45 correctness properties** across 5 specs (35 implemented, 10 pending)
+- **59+ total tests** (properties + additional)
 - Property tests validate requirements traceability
+
+### Test Files
+```
+tests/properties/
+├── auth.property.js        # Properties 1-3
+├── skills.property.js      # Properties 4-5
+├── geo.property.js         # Property 8
+├── matching.property.js    # Properties 6, 7, 9, 10
+├── interest.property.js    # Properties 11-12
+├── meeting.property.js     # Properties 13-16
+├── seeding.property.js     # Properties 17-18
+├── password-reset.property.js  # Properties 19-23
+├── front-page.property.js  # Properties 24-26
+└── chat.property.js        # Properties 27-36 (pending)
+```
 
 ## Security Measures
 

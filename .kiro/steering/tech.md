@@ -114,10 +114,12 @@ npm run test:props # Property tests only
 
 **Property-Based Testing:**
 - Library: fast-check
-- 32 correctness properties defined across 3 specs:
+- 45 correctness properties defined across 5 specs:
   - Core MVP: 18 properties (implemented)
-  - Dynamic Demo Seeding: 9 properties (spec ready)
-  - Password Reset: 5 properties (spec ready)
+  - Dynamic Demo Seeding: 9 properties (implemented)
+  - Password Reset: 5 properties (implemented)
+  - Front Page & Site-Wide: 3 properties (implemented)
+  - Chat Messaging: 10 properties (spec complete)
 - Each property tagged with requirement reference
 - Minimum 50-100 iterations per property
 
@@ -131,11 +133,13 @@ tests/
     ├── matching.property.js    # Properties 6, 7, 9, 10
     ├── interest.property.js    # Properties 11-12
     ├── meeting.property.js     # Properties 13-16
-    └── seeding.property.js     # Properties 17-18
+    ├── seeding.property.js     # Properties 17-18
+    ├── password-reset.property.js  # Properties 19-23
+    └── front-page.property.js  # Properties 24-26
 ```
 
 **Coverage Goals:**
-- All 18 core correctness properties implemented and passing
+- All 45 correctness properties implemented and passing (35 done, 10 pending)
 - Complete user flow tested via property tests
 - Demo mode enables single-user testing (auto-confirm features)
 

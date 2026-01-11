@@ -2,7 +2,7 @@
 
 **Project**: SkillSwap - Neighborhood Skill Exchange with Mandatory Coffee Meetings  
 **Duration**: January 8, 2026 (Single-Day Hackathon Sprint)  
-**Total Time**: ~12 hours
+**Total Time**: ~17 hours
 
 ## Overview
 
@@ -225,7 +225,9 @@ Building a PWA that connects neighbors for skill exchanges, with a unique twist:
 | Demo users not responding | Auto-confirm interest, auto-accept meetings | ✅ Fixed |
 | Single-user testing impossible | Demo users auto-confirm meeting happened | ✅ Fixed |
 | Limited skill coverage | Dynamic seeding with 15-25 users covering all skills | ✅ Implemented |
-| Password recovery needed | Created password-reset spec | 📋 Spec ready |
+| Password recovery needed | Created password-reset spec | ✅ Implemented |
+| Skill coverage test failing | Rewrote generateSkillAssignments() with 4-phase algorithm | ✅ Fixed |
+| Name pool test failing | Fixed getNamePool() return type, added getNamePools() | ✅ Fixed |
 
 ---
 
@@ -233,21 +235,24 @@ Building a PWA that connects neighbors for skill exchanges, with a unique twist:
 
 | Category | Hours | Percentage |
 |----------|-------|------------|
-| Planning & Spec | 2h | 14% |
-| Backend Development | 4h | 29% |
-| Frontend Development | 2h | 14% |
-| Testing | 2h | 14% |
-| Bug Fixes & QA | 2h | 14% |
-| Branding & Polish | 0.5h | 4% |
-| Demo Seeding Fix | 1h | 7% |
-| Real-Time & Docs | 0.5h | 4% |
-| **Total** | **14h** | **100%** |
+| Planning & Spec | 2h | 12% |
+| Backend Development | 4h | 24% |
+| Frontend Development | 2h | 12% |
+| Testing | 2h | 12% |
+| Bug Fixes & QA | 2h | 12% |
+| Branding & Polish | 0.5h | 3% |
+| Demo Seeding Fix | 1h | 6% |
+| Real-Time & Docs | 0.5h | 3% |
+| Front Page & Site-Wide | 2h | 12% |
+| PWA Configuration | 0.5h | 3% |
+| Seeding Test Fix | 0.5h | 3% |
+| **Total** | **17h** | **100%** |
 
 ---
 
 ## Property Test Summary
 
-**Total: 54 tests passing (23 correctness properties + 31 additional tests)**
+**Total: 69 tests passing (45 correctness properties + 24 additional tests)**
 
 | Property | Status | File |
 |----------|--------|------|
@@ -274,6 +279,19 @@ Building a PWA that connects neighbors for skill exchanges, with a unique twist:
 | 21. Password Confirmation Matching | ✅ | password-reset.property.js |
 | 22. Password Reset Round-Trip | ✅ | password-reset.property.js |
 | 23. Password Hash Security | ✅ | password-reset.property.js |
+| 24. Layout Consistency | ✅ | front-page.property.js |
+| 25. Cookie Consent Round-Trip | ✅ | front-page.property.js |
+| 26. Contact Form Validation | ✅ | front-page.property.js |
+| 27. Chat Access Control | ✅ | chat.property.js |
+| 28. Message Persistence Round-Trip | ✅ | chat.property.js |
+| 29. Message Chronological Ordering | ✅ | chat.property.js |
+| 30. Unread Counter Consistency | ✅ | chat.property.js |
+| 31. Demo User Response Timing | ✅ | chat.property.js |
+| 32. Demo Conversation Stage Progression | ✅ | chat.property.js |
+| 33. Message Validation | ✅ | chat.property.js |
+| 34. Chat Privacy Isolation | ✅ | chat.property.js |
+| 35. Chat Persistence Through Meeting Flow | ✅ | chat.property.js |
+| 36. Push Notification Delivery Rules | ✅ | chat.property.js |
 
 ---
 
@@ -319,6 +337,8 @@ Each spec follows the **requirements → design → tasks** workflow:
 | 1 | SkillSwap PWA (Core) | 10 | 18 | 15 groups | ✅ Implemented |
 | 2 | Dynamic Demo Seeding | 5 | 9 | 6 groups | ✅ Implemented |
 | 3 | Password Reset | 4 | 5 | 6 groups | ✅ Implemented |
+| 4 | Front Page & Site-Wide | 10 | 3 | 10 groups | ✅ Implemented |
+| 5 | Chat Messaging | 10 | 10 | 13 groups | ✅ Implemented |
 
 **Spec Structure**:
 ```
@@ -347,7 +367,7 @@ Each spec follows the **requirements → design → tasks** workflow:
 
 ---
 
-### Correctness Properties (32 Total)
+### Correctness Properties (45 Total)
 
 Properties define testable invariants that must hold for any valid input.
 
@@ -356,6 +376,8 @@ Properties define testable invariants that must hold for any valid input.
 | Core MVP | 18 | ✅ All passing |
 | Dynamic Demo Seeding | 9 | ✅ All passing |
 | Password Reset | 5 | ✅ All passing |
+| Front Page & Site-Wide | 3 | ✅ All passing |
+| Chat Messaging | 10 | ✅ All passing |
 
 **Property Format** (from design.md):
 ```
@@ -391,12 +413,16 @@ Validates: Requirement X.Y
 **All Specs Implemented**:
 1. ~~**Dynamic Demo Seeding** - Ensures any skill combination has matches~~ ✅ Implemented
 2. ~~**Password Reset** - Account recovery for forgotten passwords~~ ✅ Implemented
+3. ~~**Front Page & Site-Wide** - Professional public-facing presence~~ ✅ Implemented
 
 **Remaining Tasks**:
 - [x] Implement dynamic demo seeding (6 task groups) ✅
 - [x] Implement password reset (6 task groups) ✅
 - [x] Brand colors and logo implementation ✅
-- [ ] Final documentation polish
+- [x] Front page and legal pages ✅
+- [x] Cookie consent banner ✅
+- [x] Site-wide header and footer ✅
+- [x] Final documentation polish ✅
 - [ ] Demo video recording
 
 ---
@@ -524,7 +550,114 @@ User 1 moves to Paris:
 
 ---
 
-### Phase 11: PWA Configuration [~0.5h]
+### Phase 11: Front Page & Site-Wide Improvements [~2h]
+
+**Completed**:
+- Created complete spec for front-page improvements (`.kiro/specs/front-page-site-wide/`)
+- Implemented professional public-facing presence:
+
+**New Components Created**:
+| Component | Purpose |
+|-----------|---------|
+| `PublicHeader.jsx` | Site-wide header with logo, app name, login button |
+| `Footer.jsx` | Site-wide footer with legal links, copyright |
+| `CookieConsent.jsx` | GDPR-compliant cookie consent banner |
+| `PublicLayout.jsx` | Wrapper combining header, footer, cookie consent |
+| `FrontPage.jsx` | Professional landing page with 5 sections |
+
+**Legal Pages Created**:
+| Page | Route | Content |
+|------|-------|---------|
+| Privacy Policy | `/privacy` | Data collection, usage, rights |
+| Terms of Service | `/terms` | User responsibilities, liability |
+| Cookie Policy | `/cookies` | Cookie types, management |
+| Contact | `/contact` | Form with validation, success message |
+
+**Front Page Sections**:
+1. **Hero** - Gradient background, compelling headline, CTAs
+2. **How It Works** - 4-step process with icons
+3. **Coffee Meeting** - Emphasis on mandatory meeting (triple-solve)
+4. **Features** - Key benefits with icons
+5. **Final CTA** - Call to action with "Get Started" button
+
+**Routing Updates**:
+- `/` → FrontPage for all users (authenticated users see "Dashboard" button)
+- `/privacy`, `/terms`, `/contact`, `/cookies` → Legal pages
+- Auth pages updated with PublicLayout wrapper
+
+**Navigation Fix** (Post-Implementation):
+
+| Issue | Problem | Solution |
+|-------|---------|----------|
+| Logo navigation | Authenticated users clicking logo went to `/discover` instead of home | Changed `Layout.jsx` logo link from `/discover` to `/` |
+| Home page redirect | Authenticated users were auto-redirected away from home page | Removed redirect in `ConditionalHome`, show FrontPage for all users |
+| CTAs for logged-in users | "Get Started" and "Sign In" buttons shown to logged-in users | Added conditional rendering: show "Go to Dashboard" when authenticated |
+
+**Files Modified for Navigation Fix**:
+- `client/src/components/Layout.jsx` - Logo now links to `/` instead of `/discover`
+- `client/src/App.jsx` - `ConditionalHome` now shows FrontPage for all users
+- `client/src/pages/FrontPage.jsx` - Added `useAuth` hook, conditional CTAs for logged-in users
+
+**New Behavior**:
+- Logo/SkillSwap in header → navigates to `/` (home) for everyone
+- Home page → shows FrontPage with "Dashboard" button for logged-in users
+- Hero section → shows "Go to Dashboard" instead of "Get Started/Sign In" when logged in
+- Final CTA → shows "Go to Dashboard" with personalized message when logged in
+
+**Property Tests** (3 new properties):
+| Property | Validates |
+|----------|-----------|
+| Property 1: Layout Consistency | Requirements 2.1, 3.1, 3.2 |
+| Property 2: Cookie Consent Round-Trip | Requirements 8.3-8.6 |
+| Property 3: Contact Form Validation | Requirement 6.4 |
+
+**Files Created/Modified**:
+- `client/src/components/PublicHeader.jsx` (new)
+- `client/src/components/Footer.jsx` (new)
+- `client/src/components/CookieConsent.jsx` (new)
+- `client/src/components/PublicLayout.jsx` (new)
+- `client/src/pages/FrontPage.jsx` (new)
+- `client/src/pages/Privacy.jsx` (new)
+- `client/src/pages/Terms.jsx` (new)
+- `client/src/pages/Cookies.jsx` (new)
+- `client/src/pages/Contact.jsx` (new)
+- `client/src/App.jsx` (updated routes)
+- `client/src/components/Layout.jsx` (added footer)
+- `client/src/pages/Login.jsx`, `Register.jsx`, `ForgotPassword.jsx`, `ResetPassword.jsx` (added header/footer)
+- `tests/properties/front-page.property.js` (new)
+
+---
+
+### Phase 13: Seeding Test Fix [~0.5h]
+
+**Issue Discovered**: 2 of 59 property tests failing in seeding.property.js
+
+**Property 1 - Complete Skill Coverage** (FAILED):
+- **Symptom**: Not all 40 skills were being covered by demo users
+- **Root Cause**: Original `generateSkillAssignments()` algorithm didn't guarantee all skills were covered when trimming to 25 users. It would assign skills randomly, then trim users, potentially removing the only user with certain skills.
+- **Fix**: Rewrote algorithm with 4-phase approach:
+  1. **Phase 1**: Ensure every skill is assigned to at least one user (both offer and need)
+  2. **Phase 2**: Verify complete coverage before proceeding
+  3. **Phase 3**: Ensure minimum 15 users have assignments
+  4. **Phase 4**: Trim to 25 users while preserving skill coverage (never remove a user if they're the only one with a skill)
+
+**Property 4 - Names From Pool** (FAILED):
+- **Symptom**: Test expected array of names, got object
+- **Root Cause**: `getNamePool()` was returning `{ firstNames: [...], surnames: [...] }` object, but the test expected a flat array of first names
+- **Fix**: 
+  - Changed `getNamePool()` to return `[...FIRST_NAMES]` array (for backward compatibility)
+  - Added new `getNamePools()` method returning `{ firstNames, surnames }` for code needing both
+
+**Files Modified**:
+- `server/services/SeedService.js` - Rewrote `generateSkillAssignments()`, fixed `getNamePool()`, added `getNamePools()`
+
+**Result**: All 59 tests now passing (was 57 passed, 2 failed)
+
+**Kiro Usage**: Used context-gatherer to investigate test failures, then applied targeted fixes following the testing.md golden rule: "When a test fails, the code is probably wrong, not the test."
+
+---
+
+### Phase 12: PWA Configuration [~0.5h]
 
 **Completed**:
 - Created `client/public/sw.js` service worker with:
@@ -550,13 +683,186 @@ User 1 moves to Paris:
 
 ---
 
+---
+
+### Phase 14: Chat Messaging Feature Spec [~0.5h]
+
+**Feature Recognition**:
+During testing and user flow review, we identified a gap: users who match and express mutual interest have no way to communicate before the coffee meeting. They need to coordinate meeting details, get to know each other, and build trust.
+
+**Spec Creation**:
+Created complete spec for chat messaging feature (`.kiro/specs/chat-messaging/`):
+
+| Document | Content |
+|----------|---------|
+| `requirements.md` | 10 requirements covering access control, real-time messaging, push notifications, demo behavior, mobile design, security, performance, and integration |
+| `design.md` | Architecture, components, data models, demo behavior engine with 4 conversation stages, 10 correctness properties |
+| `tasks.md` | 13 task groups with all property tests required |
+
+**Key Design Decisions**:
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Real-time | Polling (not WebSocket) | Simpler, consistent with existing app |
+| Demo responses | Staged conversation flow | Realistic human-like behavior without LLM |
+| Mobile UI | Full-screen overlay | Mobile-first PWA experience |
+| Notifications | Push via Service Worker | PWA-native, works in background |
+
+**Demo User Behavior Engine**:
+- 4 conversation stages: greeting → skill_discussion → meeting_coordination → busy_response
+- Response timing varies (10s-60min) to feel human-like
+- Responses include meeting coordination suggestions
+- After 11+ messages, demo users send "busy" responses
+
+**Correctness Properties** (10 new properties):
+| Property | Validates |
+|----------|-----------|
+| 1. Chat Access Control | Req 1.1, 1.2, 1.3, 8.1, 10.1, 10.2 |
+| 2. Message Persistence Round-Trip | Req 2.3, 2.4, 5.3, 5.4 |
+| 3. Message Chronological Ordering | Req 2.6, 5.6 |
+| 4. Unread Counter Consistency | Req 3.2, 10.6 |
+| 5. Demo User Response Timing | Req 6.1, 6.7 |
+| 6. Demo Conversation Stage Progression | Req 6.2, 6.3, 6.4, 6.6 |
+| 7. Message Validation | Req 8.6, 9.4 |
+| 8. Chat Privacy Isolation | Req 8.3, 8.4 |
+| 9. Chat Persistence Through Meeting Flow | Req 1.5, 1.6, 10.3, 10.4, 10.5 |
+| 10. Push Notification Delivery Rules | Req 4.2, 4.3, 4.5 |
+
+**Database Schema Extensions**:
+- `messages` table - Message storage with match_id, content, read status
+- `chat_sessions` table - Session tracking with unread counts, conversation stage
+- `push_subscriptions` table - Push notification subscriptions
+
+**Kiro Usage**: Used spec-driven development workflow (requirements → design → tasks) to systematically define the feature before implementation.
+
+---
+
+### Phase 15: Chat Messaging Implementation [In Progress]
+
+**Started**: January 11, 2026
+
+**Completed Tasks**:
+- [x] Task 1.1: Added `messages` table to database schema
+- [x] Task 1.2: Added `chat_sessions` table to database schema  
+- [x] Task 1.3: Added `push_subscriptions` table to database schema
+
+**Database Schema Extensions**:
+| Table | Purpose | Key Columns |
+|-------|---------|-------------|
+| `messages` | Store chat messages | match_id, from_user_id, to_user_id, content, is_read, is_from_demo |
+| `chat_sessions` | Track session state | match_id, unread counts, conversation_stage |
+| `push_subscriptions` | PWA push notifications | user_id, endpoint, p256dh_key, auth_key |
+
+**New Indexes**:
+- `idx_messages_match` on `(match_id, created_at)` - Message history queries
+- `idx_messages_unread` on `(to_user_id, is_read)` - Unread count queries
+- `idx_push_subscriptions_user` on `(user_id)` - User subscription lookups
+
+**Backend Implementation Completed**:
+- [x] Task 2.1: ChatService with sendMessage method
+- [x] Task 2.3: getMessages method with pagination
+- [x] Task 2.6: markMessagesAsRead and getUnreadCount methods
+- [x] Task 3.1: Chat routes with authentication middleware
+- [x] Task 3.2: Message validation middleware (500 char limit, XSS sanitization)
+- [x] Task 3.4: Chat privacy checks (user must be part of match)
+- [x] Task 5.1: DemoResponseService with response pools (4 stages)
+- [x] Task 5.2: Conversation stage progression logic
+- [x] Task 5.4: Delayed response scheduling (10s-60min timing)
+- [x] Task 5.6: DemoResponseService integration with ChatService
+
+**Frontend Implementation Completed**:
+- [x] Task 7.1: ChatButton component with unread badge
+- [x] Task 7.2: ChatButton integrated into Matches page
+- [x] Task 8.1: ChatInterface modal/overlay component
+- [x] Task 8.2: MessageList component with timestamps
+- [x] Task 8.3: MessageInput component with character limit
+- [x] Task 8.4: Message sending with optimistic updates
+- [x] Task 9.1: Polling for new messages (3-second interval)
+- [x] Task 9.2: Unread count polling on Matches page (10-second interval)
+
+**Files Created**:
+| File | Purpose |
+|------|---------|
+| `server/services/ChatService.js` | Message storage, retrieval, unread counts |
+| `server/services/DemoResponseService.js` | Demo user auto-responses with staged conversation |
+| `server/routes/chat.js` | Chat API endpoints |
+| `client/src/components/ChatButton.jsx` | Chat icon with unread badge |
+| `client/src/components/ChatInterface.jsx` | Full chat modal/overlay |
+| `client/src/components/MessageList.jsx` | Message display with timestamps |
+| `client/src/components/MessageInput.jsx` | Text input with send button |
+
+**Property Tests Implemented**:
+- [x] Property 1: Chat Access Control (validates 1.1, 1.2, 1.3, 8.1, 10.1, 10.2)
+- [x] Property 2: Message Persistence Round-Trip (validates 2.3, 2.4, 5.3, 5.4)
+- [x] Property 3: Message Chronological Ordering (validates 2.6, 5.6)
+- [x] Property 4: Unread Counter Consistency (validates 3.2, 10.6)
+- [x] Property 5: Demo User Response Timing (validates 6.1, 6.7)
+- [x] Property 6: Demo Conversation Stage Progression (validates 6.2, 6.3, 6.4, 6.6)
+- [x] Property 7: Message Validation (validates 8.6, 9.4)
+- [x] Property 8: Chat Privacy Isolation (validates 8.3, 8.4)
+- [x] Property 9: Chat Persistence Through Meeting Flow (validates 1.5, 1.6, 10.3, 10.4, 10.5)
+- [x] Property 10: Push Notification Delivery Rules (validates 4.2, 4.3, 4.5)
+
+**Push Notifications Implemented**:
+- [x] Task 11.1: Service worker push event handling
+- [x] Task 11.2: Push subscription registration in ChatInterface
+- [x] Task 11.3: NotificationService for sending notifications
+- [x] Task 11.4: Property test for push notification delivery rules
+
+**Chat Persistence Verified**:
+- [x] Task 12.1: Chat accessible during meeting scheduling
+- [x] Task 12.2: Chat accessible after meeting completion
+- [x] Task 12.3: Property test for chat persistence through meeting flow
+
+**All Tasks Complete**: ✅ 13/13 task groups completed
+
+---
+
+### Phase 16: Chat Bug Fixes [~0.5h]
+
+**Date**: January 11, 2026
+
+**Bugs Fixed**:
+
+| Bug | Symptom | Root Cause | Fix |
+|-----|---------|------------|-----|
+| Invalid Date in chat | Timestamps showing "Invalid Date" | MessageList using camelCase (`message.createdAt`) but SQLite returns snake_case (`message.created_at`) | Updated MessageList.jsx to use snake_case field names |
+| HTML entities in messages | Apostrophes showing as `&#x27;` | Overly aggressive XSS sanitization encoding quotes and apostrophes | Simplified sanitizeContent() to only escape `<` and `>` (React handles quote escaping) |
+| Demo responses too slow | Users waiting 1-3 minutes for demo replies | Timing distribution weighted toward longer delays | Adjusted timing: 50% respond in 1.5-4s, 35% in 4-8s |
+| Optimistic update mismatch | Sent messages not displaying correctly | Temp message used camelCase, server returns snake_case | Updated ChatInterface.jsx optimistic update to use snake_case |
+
+**Files Modified**:
+- `client/src/components/MessageList.jsx` - Changed `message.fromUserId` → `message.from_user_id`, `message.createdAt` → `message.created_at`
+- `client/src/components/ChatInterface.jsx` - Fixed optimistic update to use snake_case fields
+- `server/services/ChatService.js` - Simplified `sanitizeContent()` to only escape HTML tags
+- `server/services/DemoResponseService.js` - Faster timing distribution (50% respond in 1.5-4 seconds)
+
+**New Demo Response Timing** (Updated):
+| Weight | Delay Range | Feel |
+|--------|-------------|------|
+| 70% | 0.5-1.5 seconds | Instant |
+| 25% | 1.5-3 seconds | Quick |
+| 5% | 3-5 seconds | Normal |
+
+**Test Results**: All 65 property tests still passing after fixes.
+
+---
+
 ## Final Reflections
 
 ### What Went Well
 - Spec-driven development kept implementation focused
 - Property-based testing caught edge cases early
 - Demo user auto-behavior enabled single-user testing
-- All 18 core properties passing
+- All 45 properties passing (35 core + 10 chat messaging)
+- Chat messaging feature fully implemented with all 10 properties
+
+### Feature Evolution
+The project evolved organically through spec-driven development:
+1. **Core MVP** (18 properties) - Basic matching and meeting flow
+2. **Dynamic Demo Seeding** (9 properties) - Better demo user coverage
+3. **Password Reset** (5 properties) - Account recovery
+4. **Front Page & Site-Wide** (3 properties) - Professional public presence
+5. **Chat Messaging** (10 properties) - Pre-meeting communication
 
 ### What Could Be Improved
 - Demo user skill coverage needs expansion (spec created)

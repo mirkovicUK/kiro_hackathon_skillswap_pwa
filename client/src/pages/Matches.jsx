@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import ChatButton from '../components/ChatButton'
+import ChatInterface from '../components/ChatInterface'
 
 // Polling interval in milliseconds (2 seconds)
 const POLL_INTERVAL = 2000
@@ -8,6 +10,8 @@ export default function Matches() {
   const [matches, setMatches] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [activeChat, setActiveChat] = useState(null) // { matchId, otherUser }
+  const [currentUserId, setCurrentUserId] = useState(null)
 
   const fetchMatches = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true)
@@ -23,12 +27,30 @@ export default function Matches() {
 
       const data = await res.json()
       setMatches(data.matches || [])
+      
+      // Get current user ID from token
+      if (!currentUserId && token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]))
+          setCurrentUserId(payload.userId)
+        } catch (e) {
+          console.error('Failed to parse token:', e)
+        }
+      }
     } catch (err) {
       setError(err.message)
     } finally {
       if (showLoading) setLoading(false)
     }
-  }, [])
+  }, [currentUserId])
+
+  const openChat = (matchId, otherUser) => {
+    setActiveChat({ matchId, otherUser })
+  }
+
+  const closeChat = () => {
+    setActiveChat(null)
+  }
 
   // Initial fetch
   useEffect(() => {
@@ -156,15 +178,33 @@ export default function Matches() {
                 </div>
               </div>
 
-              <Link
-                to={`/meeting/${match.matchId}`}
-                className="block w-full text-center bg-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-primary-dark transition-colors"
-              >
-                {match.meetingStatus === 'none' ? '☕ Schedule Coffee Meeting' : 'View Meeting Details'}
-              </Link>
+              <div className="flex gap-2">
+                <ChatButton
+                  matchId={match.matchId}
+                  otherUserId={match.otherUser.id}
+                  onClick={() => openChat(match.matchId, match.otherUser)}
+                />
+                <Link
+                  to={`/meeting/${match.matchId}`}
+                  className="flex-1 text-center bg-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-primary-dark transition-colors"
+                >
+                  {match.meetingStatus === 'none' ? '☕ Schedule Coffee Meeting' : 'View Meeting Details'}
+                </Link>
+              </div>
             </div>
           ))}
         </div>
+      )}
+
+      {/* Chat Interface */}
+      {activeChat && currentUserId && (
+        <ChatInterface
+          matchId={activeChat.matchId}
+          currentUserId={currentUserId}
+          otherUserName={activeChat.otherUser.name}
+          isOpen={!!activeChat}
+          onClose={closeChat}
+        />
       )}
 
       <div className="bg-secondary-light rounded-lg p-4 text-sm text-dark">

@@ -21,8 +21,8 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Environment variables
-.env
+# Environment variables (NOTE: .env is committed for hackathon - no secrets)
+# .env
 .env.local
 .env.*.local
 

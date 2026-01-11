@@ -160,7 +160,108 @@ Key-value store for application metadata.
 
 ---
 
+### messages
+
+Stores chat messages between matched users.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique message ID |
+| `match_id` | TEXT | NOT NULL | Match identifier (format: `{lowerId}-{higherId}`) |
+| `from_user_id` | INTEGER | NOT NULL, FK → users(id) | User who sent the message |
+| `to_user_id` | INTEGER | NOT NULL, FK → users(id) | User who receives the message |
+| `content` | TEXT | NOT NULL | Message content (max 500 chars) |
+| `is_read` | INTEGER | DEFAULT 0 | 1 = message has been read |
+| `is_from_demo` | INTEGER | DEFAULT 0 | 1 = message from demo user |
+| `created_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | When message was sent |
+
+**Constraints:**
+- `FOREIGN KEY(from_user_id) REFERENCES users(id) ON DELETE CASCADE`
+- `FOREIGN KEY(to_user_id) REFERENCES users(id) ON DELETE CASCADE`
+
+**Indexes:**
+- `idx_messages_match` on `(match_id, created_at)` - Message history queries
+- `idx_messages_unread` on `(to_user_id, is_read)` - Unread count queries
+
+**Notes:**
+- Chat is only enabled after mutual interest is confirmed
+- Messages persist through the entire meeting flow
+- Demo users auto-respond with staged conversation patterns
+
+---
+
+### chat_sessions
+
+Tracks chat session state and unread counts.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `match_id` | TEXT | PRIMARY KEY | Match identifier (format: `{lowerId}-{higherId}`) |
+| `user1_id` | INTEGER | NOT NULL, FK → users(id) | First user (lower ID) |
+| `user2_id` | INTEGER | NOT NULL, FK → users(id) | Second user (higher ID) |
+| `last_message_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | Timestamp of last message |
+| `user1_unread_count` | INTEGER | DEFAULT 0 | Unread messages for user1 |
+| `user2_unread_count` | INTEGER | DEFAULT 0 | Unread messages for user2 |
+| `conversation_stage` | TEXT | DEFAULT 'greeting' | Demo conversation stage |
+| `created_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | When session was created |
+
+**Constraints:**
+- `FOREIGN KEY(user1_id) REFERENCES users(id) ON DELETE CASCADE`
+- `FOREIGN KEY(user2_id) REFERENCES users(id) ON DELETE CASCADE`
+
+**Conversation Stages** (for demo user responses):
+- `greeting` - Initial messages (0-2 messages)
+- `skill_discussion` - Discussing skills (3-6 messages)
+- `meeting_coordination` - Planning meeting (7-10 messages)
+- `busy_response` - Winding down (11+ messages)
+
+---
+
+### push_subscriptions
+
+Stores push notification subscriptions for PWA.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique subscription ID |
+| `user_id` | INTEGER | NOT NULL, FK → users(id) | User who subscribed |
+| `endpoint` | TEXT | NOT NULL | Push service endpoint URL |
+| `p256dh_key` | TEXT | NOT NULL | Public key for encryption |
+| `auth_key` | TEXT | NOT NULL | Auth secret for encryption |
+| `created_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | When subscription was created |
+
+**Constraints:**
+- `UNIQUE(user_id, endpoint)` - One subscription per endpoint per user
+- `FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE`
+
+**Indexes:**
+- `idx_push_subscriptions_user` on `(user_id)` - User subscription lookups
+
+---
+
 ## Relationships
+
+```
+users (1) ──────< user_skills (N)
+  │                    
+  │ owner_user_id      
+  ├──────────────< users (demo users)
+  │
+  │ from_user_id / to_user_id
+  ├──────────────< match_interests (N)
+  │
+  │ user1_id / user2_id / proposed_by
+  ├──────────────< meetings (N)
+  │
+  │ from_user_id / to_user_id
+  ├──────────────< messages (N)
+  │
+  │ user1_id / user2_id
+  ├──────────────< chat_sessions (N)
+  │
+  │ user_id
+  └──────────────< push_subscriptions (N)
+```
 
 ```
 users (1) ──────< user_skills (N)
@@ -259,6 +360,28 @@ WHERE (user1_id = ? AND user2_id = ?)
    OR (user1_id = ? AND user2_id = ?)
 ORDER BY created_at DESC
 LIMIT 1
+```
+
+### Get Chat Messages for Match
+```sql
+SELECT * FROM messages
+WHERE match_id = ?
+ORDER BY created_at ASC
+LIMIT ? OFFSET ?
+```
+
+### Get Unread Count for User
+```sql
+SELECT COUNT(*) as unread_count
+FROM messages
+WHERE to_user_id = ? AND is_read = 0
+```
+
+### Mark Messages as Read
+```sql
+UPDATE messages
+SET is_read = 1
+WHERE match_id = ? AND to_user_id = ? AND is_read = 0
 ```
 
 ---

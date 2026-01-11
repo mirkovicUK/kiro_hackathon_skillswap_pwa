@@ -75,8 +75,8 @@ export class SeedService {
   }
 
   /**
-   * Generate skill assignments ensuring COMPLEMENTARY coverage
-   * For any skill pair (A, B), there exists a user who offers A and needs B
+   * Generate skill assignments ensuring COMPLETE coverage
+   * Every skill must be offered by at least 1 user and at most 3 users
    * @param {string[]} skills - All available skills
    * @returns {{ userSkills: Map<number, { offer: Set<string>, need: Set<string> }>, userCount: number }}
    */
@@ -84,59 +84,78 @@ export class SeedService {
     const userSkills = new Map()
     let currentUserId = 0
     
+    // Track which skills have been assigned as offers
+    const skillOfferCount = new Map()
+    skills.forEach(s => skillOfferCount.set(s, 0))
+    
     const shuffledSkills = this.shuffle([...skills])
     
-    // Create complementary pairs: for skills at positions i and i+1,
-    // create users (offers: A, needs: B) and (offers: B, needs: A)
-    for (let i = 0; i < shuffledSkills.length - 1; i += 2) {
+    // Phase 1: Ensure every skill is offered at least once
+    // Create users that each offer 2 skills and need 2 different skills
+    for (let i = 0; i < shuffledSkills.length; i += 2) {
       const skillA = shuffledSkills[i]
-      const skillB = shuffledSkills[i + 1]
+      const skillB = shuffledSkills[i + 1] || shuffledSkills[0] // Wrap around for odd count
       
-      // User 1: offers A, needs B
+      // Find 2 skills to need (different from what we offer)
+      const availableNeeds = shuffledSkills.filter(s => s !== skillA && s !== skillB)
+      const needA = availableNeeds[Math.floor(Math.random() * availableNeeds.length)]
+      const remainingNeeds = availableNeeds.filter(s => s !== needA)
+      const needB = remainingNeeds[Math.floor(Math.random() * remainingNeeds.length)] || needA
+      
       userSkills.set(currentUserId++, { 
-        offer: new Set([skillA]), 
-        need: new Set([skillB]) 
+        offer: new Set([skillA, skillB]), 
+        need: new Set([needA, needB]) 
       })
       
-      // User 2: offers B, needs A
-      userSkills.set(currentUserId++, { 
-        offer: new Set([skillB]), 
-        need: new Set([skillA]) 
+      skillOfferCount.set(skillA, skillOfferCount.get(skillA) + 1)
+      skillOfferCount.set(skillB, skillOfferCount.get(skillB) + 1)
+    }
+    
+    // Phase 2: Verify all skills are covered, add more users if needed
+    const uncoveredSkills = skills.filter(s => skillOfferCount.get(s) === 0)
+    for (const skill of uncoveredSkills) {
+      // Find a skill to need that's different
+      const needSkill = skills.find(s => s !== skill) || skills[0]
+      userSkills.set(currentUserId++, {
+        offer: new Set([skill]),
+        need: new Set([needSkill])
       })
+      skillOfferCount.set(skill, 1)
     }
     
-    // Handle odd skill
-    if (shuffledSkills.length % 2 === 1) {
-      const lastSkill = shuffledSkills[shuffledSkills.length - 1]
-      const firstSkill = shuffledSkills[0]
-      userSkills.set(currentUserId++, { 
-        offer: new Set([lastSkill]), 
-        need: new Set([firstSkill]) 
-      })
-    }
-    
-    // Add variety - give users additional skills
-    for (const [, skillSet] of userSkills) {
-      if (Math.random() > 0.5 && skillSet.offer.size < 2) {
-        const available = skills.filter(s => !skillSet.offer.has(s) && !skillSet.need.has(s))
-        if (available.length > 0) {
-          skillSet.offer.add(this.shuffle(available)[0])
-        }
-      }
-      if (Math.random() > 0.5 && skillSet.need.size < 2) {
-        const available = skills.filter(s => !skillSet.offer.has(s) && !skillSet.need.has(s))
-        if (available.length > 0) {
-          skillSet.need.add(this.shuffle(available)[0])
-        }
+    // Ensure we have at least 15 users
+    while (userSkills.size < 15) {
+      const randomOffer = shuffledSkills[Math.floor(Math.random() * shuffledSkills.length)]
+      const availableNeeds = shuffledSkills.filter(s => s !== randomOffer)
+      const randomNeed = availableNeeds[Math.floor(Math.random() * availableNeeds.length)]
+      
+      // Only add if skill isn't already offered 3 times
+      if (skillOfferCount.get(randomOffer) < 3) {
+        userSkills.set(currentUserId++, {
+          offer: new Set([randomOffer]),
+          need: new Set([randomNeed])
+        })
+        skillOfferCount.set(randomOffer, skillOfferCount.get(randomOffer) + 1)
       }
     }
     
-    // Trim to max 25 users
+    // Trim to max 25 users while preserving skill coverage
     if (userSkills.size > 25) {
-      const entries = [...userSkills.entries()]
+      // Sort entries by how many times their skills are covered (remove duplicates first)
+      const entries = [...userSkills.entries()].sort((a, b) => {
+        const aMinCoverage = Math.min(...[...a[1].offer].map(s => skillOfferCount.get(s)))
+        const bMinCoverage = Math.min(...[...b[1].offer].map(s => skillOfferCount.get(s)))
+        return bMinCoverage - aMinCoverage // Remove users with most-covered skills first
+      })
+      
       userSkills.clear()
-      for (let i = 0; i < 25; i++) {
-        userSkills.set(entries[i][0], entries[i][1])
+      skillOfferCount.forEach((_, key) => skillOfferCount.set(key, 0))
+      
+      for (let i = 0; i < Math.min(25, entries.length); i++) {
+        userSkills.set(i, entries[i][1])
+        for (const skill of entries[i][1].offer) {
+          skillOfferCount.set(skill, skillOfferCount.get(skill) + 1)
+        }
       }
     }
     
@@ -363,10 +382,19 @@ export class SeedService {
   }
 
   /**
-   * Get the name pools (for testing)
-   * @returns {{ firstNames: string[], surnames: string[] }}
+   * Get the name pool (for testing)
+   * Returns array of first names for backward compatibility with tests
+   * @returns {string[]}
    */
   static getNamePool() {
+    return [...FIRST_NAMES]
+  }
+
+  /**
+   * Get both name pools (first names and surnames)
+   * @returns {{ firstNames: string[], surnames: string[] }}
+   */
+  static getNamePools() {
     return { firstNames: [...FIRST_NAMES], surnames: [...SURNAMES] }
   }
 

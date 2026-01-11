@@ -19,6 +19,67 @@ self.addEventListener('install', (event) => {
   self.skipWaiting()
 })
 
+// Push notification event - display notification
+self.addEventListener('push', (event) => {
+  console.log('📬 Push notification received')
+  
+  let data = { title: 'SkillSwap', body: 'You have a new message!' }
+  
+  if (event.data) {
+    try {
+      data = event.data.json()
+    } catch (e) {
+      data.body = event.data.text()
+    }
+  }
+  
+  const options = {
+    body: data.body,
+    icon: '/SkillSwap_logo.png',
+    badge: '/SkillSwap_logo.png',
+    vibrate: [100, 50, 100],
+    data: {
+      matchId: data.matchId,
+      url: data.url || '/matches'
+    },
+    actions: [
+      { action: 'open', title: 'Open Chat' },
+      { action: 'dismiss', title: 'Dismiss' }
+    ]
+  }
+  
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  )
+})
+
+// Notification click event - open chat
+self.addEventListener('notificationclick', (event) => {
+  console.log('🔔 Notification clicked')
+  event.notification.close()
+  
+  if (event.action === 'dismiss') return
+  
+  const urlToOpen = event.notification.data?.url || '/matches'
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((windowClients) => {
+        // Check if app is already open
+        for (const client of windowClients) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            client.navigate(urlToOpen)
+            return client.focus()
+          }
+        }
+        // Open new window if not
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen)
+        }
+      })
+  )
+})
+
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(

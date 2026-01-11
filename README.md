@@ -88,12 +88,17 @@ To test the complete mutual matching flow:
 
 ## Key Features
 
+- **Professional Front Page**: Compelling landing page with hero, how it works, and CTAs
 - **Skill Profiles**: List skills you offer and skills you need
 - **Location-Based Discovery**: Find matches within ~2 miles (browser geolocation + Haversine formula)
 - **Mutual Confirmation**: Both parties must confirm interest before proceeding
+- **Chat Messaging**: Real-time chat between matched users (spec complete, implementation pending)
 - **Coffee Scheduling**: Propose and agree on meeting time/place
 - **Meeting Verification**: Both confirm meeting happened to unlock skill swap
-- **PWA**: Installable on mobile devices
+- **Legal Pages**: Privacy Policy, Terms of Service, Cookie Policy, Contact form
+- **Cookie Consent**: GDPR-compliant cookie consent banner
+- **Password Reset**: Secure account recovery via email
+- **PWA**: Installable on mobile devices with offline support
 
 ## Project Structure
 
@@ -101,16 +106,31 @@ To test the complete mutual matching flow:
 ├── client/                 # React PWA frontend
 │   ├── src/
 │   │   ├── pages/          # Route components
+│   │   │   ├── FrontPage.jsx    # Landing page
+│   │   │   ├── Privacy.jsx      # Privacy Policy
+│   │   │   ├── Terms.jsx        # Terms of Service
+│   │   │   ├── Cookies.jsx      # Cookie Policy
+│   │   │   ├── Contact.jsx      # Contact form
+│   │   │   └── ...              # App pages
 │   │   ├── components/     # Reusable UI
+│   │   │   ├── PublicHeader.jsx # Site-wide header
+│   │   │   ├── Footer.jsx       # Site-wide footer
+│   │   │   ├── CookieConsent.jsx # Cookie banner
+│   │   │   └── ...
 │   │   └── context/        # Auth state
 │   └── public/             # PWA manifest, icons
 ├── server/                 # Express.js backend
 │   ├── routes/             # API endpoints
 │   ├── services/           # Business logic
 │   └── data/               # Skills list
+├── tests/                  # Test files
+│   └── properties/         # Property-based tests
+├── docs/                   # Documentation
+│   ├── Architecture.md     # Technical architecture
+│   └── Project.md          # Product philosophy
 ├── .kiro/                  # Kiro configuration
-│   ├── specs/              # Feature specifications
-│   ├── steering/           # Project knowledge
+│   ├── specs/              # Feature specifications (4 specs)
+│   ├── steering/           # Project knowledge (7 files)
 │   └── prompts/            # Custom prompts
 ├── DEVLOG.md               # Development log
 └── package.json            # Monorepo config
@@ -126,6 +146,27 @@ To test the complete mutual matching flow:
 | Database | SQLite | Zero setup, single file |
 | Geolocation | Browser API + Haversine | No external API keys |
 | Testing | Vitest + fast-check | Property-based testing |
+| Auth | JWT + bcrypt | Secure sessions and passwords |
+
+## Kiro IDE Usage
+
+This project was built using **Kiro IDE** with spec-driven development:
+
+| Feature | Usage |
+|---------|-------|
+| **Spec Sessions** | 5 complete specs (requirements → design → tasks) |
+| **Steering Documents** | 7 files providing persistent AI context |
+| **Property Testing** | 45 correctness properties defined (35 tested, 10 pending) |
+| **Custom Prompts** | Workflow-specific development commands |
+
+### Specs Created
+| Spec | Requirements | Properties | Status |
+|------|--------------|------------|--------|
+| SkillSwap PWA (Core) | 10 | 18 | ✅ Complete |
+| Dynamic Demo Seeding | 5 | 9 | ✅ Complete |
+| Password Reset | 4 | 5 | ✅ Complete |
+| Front Page & Site-Wide | 10 | 3 | ✅ Complete |
+| Chat Messaging | 10 | 10 | 📋 Spec Complete |
 
 ## Environment Variables
 

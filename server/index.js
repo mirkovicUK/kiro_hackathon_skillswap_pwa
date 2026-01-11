@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.js'
 import userRoutes from './routes/users.js'
 import matchRoutes from './routes/matches.js'
 import meetingRoutes from './routes/meetings.js'
+import chatRoutes from './routes/chat.js'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/matches', matchRoutes)
 app.use('/api/meetings', meetingRoutes)
+app.use('/api/chat', chatRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {

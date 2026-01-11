@@ -7,19 +7,32 @@ skillswap/
 ├── client/                     # React PWA frontend
 │   ├── public/
 │   │   ├── manifest.json       # PWA manifest
-│   │   └── coffee.svg          # App icon (scalable SVG)
+│   │   ├── sw.js               # Service worker for offline support
+│   │   └── SkillSwap_logo.png  # App logo/icon
 │   ├── src/
 │   │   ├── components/         # Reusable UI components
-│   │   │   ├── SkillSelector.jsx
-│   │   │   ├── MatchCard.jsx
-│   │   │   └── Layout.jsx
+│   │   │   ├── PublicHeader.jsx    # Header for public pages
+│   │   │   ├── PublicLayout.jsx    # Layout wrapper (header + footer + cookie)
+│   │   │   ├── Footer.jsx          # Site-wide footer
+│   │   │   ├── CookieConsent.jsx   # GDPR cookie consent banner
+│   │   │   ├── Layout.jsx          # Authenticated user layout
+│   │   │   ├── SkillSelector.jsx   # Skill selection component
+│   │   │   ├── MatchCard.jsx       # Match display card
+│   │   │   └── InstallPrompt.jsx   # PWA install prompt
 │   │   ├── pages/              # Route-level components
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── Discover.jsx
-│   │   │   ├── Matches.jsx
-│   │   │   └── Meeting.jsx
+│   │   │   ├── FrontPage.jsx       # Public landing page
+│   │   │   ├── Privacy.jsx         # Privacy Policy
+│   │   │   ├── Terms.jsx           # Terms of Service
+│   │   │   ├── Cookies.jsx         # Cookie Policy
+│   │   │   ├── Contact.jsx         # Contact form
+│   │   │   ├── Login.jsx           # Login page
+│   │   │   ├── Register.jsx        # Registration page
+│   │   │   ├── ForgotPassword.jsx  # Password reset request
+│   │   │   ├── ResetPassword.jsx   # Password reset form
+│   │   │   ├── Profile.jsx         # User profile
+│   │   │   ├── Discover.jsx        # Find matches
+│   │   │   ├── Matches.jsx         # Mutual matches list
+│   │   │   └── Meeting.jsx         # Coffee meeting scheduling
 │   │   ├── context/            # React context providers
 │   │   │   └── AuthContext.jsx
 │   │   ├── App.jsx             # Root component with routing
@@ -47,14 +60,21 @@ skillswap/
 │   └── index.js                # Server entry point
 │
 ├── tests/                      # Test files
-│   └── properties/             # Property-based tests (18 core properties)
-│       ├── auth.property.js
-│       ├── skills.property.js
-│       ├── geo.property.js
-│       ├── matching.property.js
-│       ├── interest.property.js
-│       ├── meeting.property.js
-│       └── seeding.property.js
+│   └── properties/             # Property-based tests (45 properties)
+│       ├── auth.property.js        # Properties 1-3
+│       ├── skills.property.js      # Properties 4-5
+│       ├── geo.property.js         # Property 8
+│       ├── matching.property.js    # Properties 6, 7, 9, 10
+│       ├── interest.property.js    # Properties 11-12
+│       ├── meeting.property.js     # Properties 13-16
+│       ├── seeding.property.js     # Properties 17-18
+│       ├── password-reset.property.js  # Properties 19-23
+│       ├── front-page.property.js  # Properties 24-26
+│       └── chat.property.js        # Properties 27-36 (pending)
+│
+├── docs/                       # Documentation
+│   ├── Architecture.md         # Technical architecture
+│   └── Project.md              # Product philosophy
 │
 ├── .kiro/                      # Kiro configuration
 │   ├── steering/               # Project knowledge (7 files)
@@ -69,10 +89,12 @@ skillswap/
 │   ├── agents/                 # Custom agents
 │   │   └── skillswap-dev.json
 │   ├── hooks/                  # Automation hooks
-│   └── specs/                  # Feature specifications (3 specs)
-│       ├── skillswap-pwa/      # Core MVP spec (18 properties)
-│       ├── dynamic-demo-seeding/ # Enhanced seeding spec (9 properties)
-│       └── password-reset/     # Account recovery spec (5 properties)
+│   └── specs/                  # Feature specifications (5 specs)
+│       ├── skillswap-pwa/          # Core MVP spec (18 properties)
+│       ├── dynamic-demo-seeding/   # Enhanced seeding spec (9 properties)
+│       ├── password-reset/         # Account recovery spec (5 properties)
+│       ├── front-page-site-wide/   # Front page spec (3 properties)
+│       └── chat-messaging/         # Chat messaging spec (10 properties)
 │
 ├── package.json                # Monorepo package config
 ├── vite.config.js              # Vite configuration
@@ -158,10 +180,12 @@ skillswap/
     │   └── kiro-cli-reference.md  # Kiro feature reference
     ├── prompts/        # Custom prompts (13 prompts)
     ├── agents/         # Custom agents (skillswap-dev)
-    └── specs/          # Feature specifications (3 specs, 32 properties)
+    └── specs/          # Feature specifications (5 specs, 45 properties)
         ├── skillswap-pwa/          # Core MVP (18 properties)
         ├── dynamic-demo-seeding/   # Enhanced seeding (9 properties)
-        └── password-reset/         # Account recovery (5 properties)
+        ├── password-reset/         # Account recovery (5 properties)
+        ├── front-page-site-wide/   # Front page & legal (3 properties)
+        └── chat-messaging/         # Chat messaging (10 properties)
 ```
 
 ## Asset Organization
