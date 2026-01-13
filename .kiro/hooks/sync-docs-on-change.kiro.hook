@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "name": "Sync Documentation",
-  "description": "Watches source files (JS, JSX, JSON configs) and prompts the agent to update README.md or docs when code changes are made.",
+  "description": "Watches source files (JS, JSX, JSON configs) and prompts the agent to update README.md, DEVLOG.md and docs when code changes are made.",
   "version": "1",
   "when": {
     "type": "fileEdited",
@@ -18,5 +18,7 @@
   "then": {
     "type": "askAgent",
     "prompt": "A source file was just modified. Review the changes and determine if the README.md or Update DEVLOG or any documentation in the project needs to be updated to reflect these changes. If the changes affect setup instructions, API endpoints, configuration, features, or architecture, update the relevant documentation accordingly. Focus on keeping docs accurate and in sync with the code."
-  }
+  },
+  "workspaceFolderName": "dynamous-kiro-hackathon",
+  "shortName": "sync-docs-on-change"
 }

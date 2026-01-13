@@ -190,6 +190,31 @@ npm run build     # Production build
 
 ## Troubleshooting
 
+**Port conflicts / App not loading correctly?**
+
+If Vite shows "Port 5173 is in use, trying another one..." and the app doesn't work properly on the new port (can't login/signup), you have zombie Node processes. Kill them and restart:
+
+```bash
+# Linux/Mac: Kill all Node processes
+pkill -f node
+
+# Or kill specific ports
+lsof -ti:3001 | xargs kill -9
+lsof -ti:5173 | xargs kill -9
+
+# Windows: Kill Node processes
+taskkill /F /IM node.exe
+
+# Then restart
+npm run dev
+```
+
+Also clear browser data for localhost:
+1. Open DevTools (F12) → Application tab
+2. Clear "Local Storage" 
+3. Unregister Service Workers
+4. Hard refresh: `Ctrl+Shift+R` (or `Cmd+Shift+R` on Mac)
+
 **Location not working?**
 - Ensure you're on localhost (geolocation requires secure context)
 - Check browser permissions for location access
