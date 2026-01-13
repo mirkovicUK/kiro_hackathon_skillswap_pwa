@@ -9,15 +9,31 @@ Quick copy-paste instructions for judges.
 ```bash
 # Clone and install
 git clone <repo-url>
-cd skillswap
+cd kiro_hackathon_skillswap_pwa
 npm install
 ```
 
 ---
 
 ## 2. Start the App
+Expected Ports
+
+| Service | Port |
+|---------|------|
+| Frontend (Vite) | 5173 |
+| Backend (Express) | 3001 |
+
+If Vite uses a different port (5174, 5175...), kill processes and restart.
 
 ```bash
+
+# First kill specific ports (Linux/Mac)
+lsof -ti:3001 | xargs kill -9
+lsof -ti:5173 | xargs kill -9
+# Windows
+taskkill /F /IM node.exe
+
+
 npm run dev
 ```
 
@@ -62,20 +78,9 @@ Open **http://localhost:5173** in your browser.
 6. User B sees proposal → Clicks **"Accept"**
 7. Both users click **"Confirm Meeting Happened"**
 8. ✅ Skill swap unlocked!
-
 ---
 
-## 4. Run Tests
 
-```bash
-# Run all tests
-npm test
-
-# Run property-based tests only
-npm run test:props
-```
-
----
 
 ## Troubleshooting
 
@@ -95,19 +100,6 @@ taskkill /F /IM node.exe
 # Restart
 npm run dev
 ```
-
-### App Not Loading / Can't Login
-
-1. Open DevTools (F12) → **Application** tab
-2. Clear **Local Storage**
-3. Under **Service Workers** → Click **Unregister**
-4. Hard refresh: `Ctrl+Shift+R` (Mac: `Cmd+Shift+R`)
-
-### No Matches Appearing
-
-- Make sure you added BOTH "offer" AND "need" skills
-- Allow location access when prompted
-- Demo users seed automatically on first registration
 
 ### Database Reset
 
