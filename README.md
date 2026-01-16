@@ -24,16 +24,44 @@ SkillSwap connects neighbors within ~2 miles for skill exchanges, but requires a
 ```bash
 # Clone the repository
 git clone <repo-url>
-cd skillswap
+cd kiro_hackathon_skillswap_pwa
 
 # Install dependencies
 npm install
+```
 
-# Start the app (runs both client and server)
+### ⚠️ Before Starting - Clear Ports
+
+| Service | Port |
+|---------|------|
+| Frontend (Vite) | 5173 |
+| Backend (Express) | 3001 |
+
+If Vite shows "Port 5173 is in use", kill zombie processes first:
+
+```bash
+# Linux/Mac
+lsof -ti:3001 | xargs kill -9
+lsof -ti:5173 | xargs kill -9
+
+# Windows
+taskkill /F /IM node.exe
+```
+
+### Start the App
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:5173 in your browser.
+You should see:
+```
+🚀 Server running on http://localhost:3001
+VITE ready in XXms
+➜ Local: http://localhost:5173/
+```
+
+Open **http://localhost:5173** in your browser.
 
 ## Prerequisites
 
@@ -45,27 +73,39 @@ Open http://localhost:5173 in your browser.
 
 ## Testing the App
 
-### Quick Test (Single User)
+### Quick Test (Single User + Demo Users)
 
-1. Register an account and allow location access
-2. 15-25 demo users will automatically appear nearby, covering all available skills
-3. Express interest in a demo user match
-4. Complete the coffee meeting flow (propose → accept → confirm)
+1. Click **"Get Started Free"** on the front page
+2. Register with any email/password (min 8 chars)
+3. You'll land on the **Profile** page
+4. **Set your location** (click "Auto-detect" or enter coordinates manually)
+5. **Add skills:**
+   - Offer: Pick any skill (e.g., "Plumbing")
+   - Need: Pick any skill (e.g., "Web Design")
+6. Click **"Save Profile"**
+7. Navigate to **Discover** (via sidebar/nav)
+8. See 15-25 demo users nearby with complementary skills
+9. Click **"I'm Interested"** on a match
+10. Demo user auto-responds → Go to **Matches** tab
+11. Click **"Schedule Coffee Meeting"** → Propose location/date/time
+12. Demo user auto-accepts → Click **"Confirm Meeting Happened"**
+13. ✅ Skill swap unlocked!
 
-### Full Test (Two Users - Recommended)
+### Full Test (Two Real Users - Recommended)
 
 To test the complete mutual matching flow:
 
 1. Open **two browser windows** (one regular, one incognito)
-2. Register two accounts with complementary skills:
-   - **User A**: Offers "Plumbing", Needs "Web Design"
-   - **User B**: Offers "Web Design", Needs "Plumbing"
-3. Both users should appear as matches to each other
-4. Both users express interest → status becomes "mutual"
-5. Either user proposes a coffee meeting (location, date, time)
-6. Other user accepts the meeting
-7. After meeting, both users click "Confirm Meeting Happened"
-8. Skill swap is now unlocked! 🎉
+2. Register two accounts and complete profiles:
+   - **User A**: Offers "Plumbing", Needs "Web Design", set location
+   - **User B**: Offers "Web Design", Needs "Plumbing", set same/nearby location
+3. Both users go to **Discover** → See each other as matches
+4. Both users click **"I'm Interested"** → Check **Matches** tab
+5. Status becomes **"Mutual"** - both appear in each other's Matches
+6. User A clicks **"Schedule Coffee Meeting"** → Proposes location/date/time
+7. User B goes to **Matches** → **"View Meeting Details"** → Clicks **"Accept"**
+8. Both users click **"Confirm Meeting Happened"**
+9. ✅ Skill swap unlocked! 🎉
 
 ## Architecture
 
@@ -92,7 +132,7 @@ To test the complete mutual matching flow:
 - **Skill Profiles**: List skills you offer and skills you need
 - **Location-Based Discovery**: Find matches within ~2 miles (browser geolocation + Haversine formula)
 - **Mutual Confirmation**: Both parties must confirm interest before proceeding
-- **Chat Messaging**: Real-time chat between matched users (spec complete, implementation pending)
+- **Chat Messaging**: Real-time chat between matched users with demo auto-responses
 - **Coffee Scheduling**: Propose and agree on meeting time/place
 - **Meeting Verification**: Both confirm meeting happened to unlock skill swap
 - **Legal Pages**: Privacy Policy, Terms of Service, Cookie Policy, Contact form
@@ -154,10 +194,11 @@ This project was built using **Kiro IDE** with spec-driven development:
 
 | Feature | Usage |
 |---------|-------|
-| **Spec Sessions** | 5 complete specs (requirements → design → tasks) |
+| **Spec Sessions** | 6 complete specs (requirements → design → tasks) |
 | **Steering Documents** | 7 files providing persistent AI context |
-| **Property Testing** | 45 correctness properties defined (35 tested, 10 pending) |
-| **Custom Prompts** | Workflow-specific development commands |
+| **Property Testing** | 45 correctness properties defined and tested |
+| **Custom Prompts** | 13 workflow-specific development commands |
+| **Demo Video** | Voice script and audio generated with AWS Polly |
 
 ### Specs Created
 | Spec | Requirements | Properties | Status |
@@ -166,7 +207,11 @@ This project was built using **Kiro IDE** with spec-driven development:
 | Dynamic Demo Seeding | 5 | 9 | ✅ Complete |
 | Password Reset | 4 | 5 | ✅ Complete |
 | Front Page & Site-Wide | 10 | 3 | ✅ Complete |
-| Chat Messaging | 10 | 10 | 📋 Spec Complete |
+| Chat Messaging | 10 | 10 | ✅ Complete |
+| Demo Video | 4 | 1 | ✅ Complete |
+
+### Meta-Innovation: Kiro Gives Itself a Voice
+The demo video narration was written by Kiro and converted to speech using AWS Polly. The AI literally wrote its own presentation script, showcasing the full potential of AI-assisted development.
 
 ## Environment Variables
 
@@ -235,6 +280,8 @@ Also clear browser data for localhost:
 ☕ **Coffee meeting as product**: The meeting isn't a feature - it's the core value proposition
 
 🔐 **Triple-solve**: One requirement (coffee meeting) solves verification, safety, AND loneliness
+
+🎤 **Meta-innovation**: Kiro wrote its own demo presentation and generated the narration using AWS Polly
 
 ## License
 

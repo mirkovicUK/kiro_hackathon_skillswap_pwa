@@ -1,0 +1,107 @@
+[SECTION: INTRO]
+<speak>
+  <prosody rate="medium">
+    The skill swap is the excuse. <break time="300ms"/> Human connection is the product.
+    <break time="500ms"/>
+    In fast-paced cities, people have skills they could trade but don't know their neighbors.
+    <break time="300ms"/>
+    They feel isolated despite living in populated areas.
+    <break time="300ms"/>
+    They want to slow down but need a structured reason.
+    <break time="500ms"/>
+    SkillSwap's counter-intuitive approach solves three problems simultaneously: <break time="300ms"/>
+    user verification through face-to-face meetings, <break time="300ms"/>
+    safety in public locations, <break time="300ms"/>
+    and urban loneliness through structured social interaction.
+  </prosody>
+</speak>
+
+[SECTION: KIRO_USAGE]
+<speak>
+  <prosody rate="medium">
+    This project showcases Kiro's spec-driven development.
+    <break time="400ms"/>
+    Five feature specifications with requirements, design, and tasks.
+    <break time="300ms"/>
+    Seven steering documents guide the AI with product context and architecture.
+    <break time="400ms"/>
+    Forty-five correctness properties tested with fast-check ensure our code works correctly across thousands of random inputs.
+  </prosody>
+</speak>
+
+[SECTION: HOMEPAGE]
+<speak>
+  <prosody rate="medium">
+    Here's our landing page.
+    <break time="400ms"/>
+    The hero section captures our value proposition: connect with neighbors, exchange skills, build community.
+    <break time="400ms"/>
+    Below, we explain how it works in four simple steps.
+  </prosody>
+</speak>
+
+[SECTION: AUTH]
+<speak>
+  <prosody rate="medium">
+    Let's create an account.
+    <break time="400ms"/>
+    Enter your name, email, and password.
+    <break time="1000ms"/>
+    Registration is instant.
+    <break time="400ms"/>
+    Now let's log in.
+    <break time="1000ms"/>
+    And we're in.
+  </prosody>
+</speak>
+
+[SECTION: APP_FLOW]
+<speak>
+  <prosody rate="medium">
+    First, set up your profile.
+    <break time="400ms"/>
+    Select skills you offer, like web design or plumbing.
+    <break time="300ms"/>
+    Then select skills you need.
+    <break time="300ms"/>
+    Share your location to find nearby matches.
+    <break time="600ms"/>
+    
+    Now discover matches within two miles.
+    <break time="400ms"/>
+    The system finds neighbors with complementary skills.
+    <break time="300ms"/>
+    They offer what you need, you offer what they need.
+    <break time="600ms"/>
+    
+    Express interest in someone.
+    <break time="400ms"/>
+    When both parties are interested, it's a mutual match.
+    <break time="600ms"/>
+    
+    Here's the key innovation: <break time="300ms"/> the mandatory coffee meeting.
+    <break time="400ms"/>
+    Propose a time and place for a public meeting.
+    <break time="400ms"/>
+    Your match can accept or suggest an alternative.
+    <break time="600ms"/>
+    
+    After meeting in person, both users confirm the meeting happened.
+    <break time="400ms"/>
+    This verification step unlocks the skill swap.
+    <break time="300ms"/>
+    You've built trust face-to-face.
+  </prosody>
+</speak>
+
+[SECTION: OUTRO]
+<speak>
+  <prosody rate="medium">
+    For judges testing the app: <break time="300ms"/>
+    use incognito mode for the full two-user experience, <break time="300ms"/>
+    or test with a single account and our demo users will auto-respond.
+    <break time="600ms"/>
+    Thank you. <break time="300ms"/>
+    SkillSwap: where the skill swap is the excuse, and human connection is the product.
+  </prosody>
+</speak>
